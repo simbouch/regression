@@ -17,9 +17,14 @@ app = Flask(__name__)
 base_dir = os.path.abspath(os.path.dirname(__file__))
 pipeline_path = os.path.join(base_dir, "models", "optimized_ensemble_pipeline.pkl")
 
+logger.info(f"Attempting to load pipeline from {pipeline_path}")
+
 try:
     pipeline = joblib.load(pipeline_path)
     logger.info(f"Pipeline loaded successfully from {pipeline_path}")
+except FileNotFoundError:
+    logger.error(f"Pipeline file not found at {pipeline_path}")
+    pipeline = None
 except Exception as e:
     logger.error(f"Error loading pipeline: {e}")
     pipeline = None
