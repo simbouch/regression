@@ -13,21 +13,25 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# Print the current working directory
+logger.info(f"Current working directory: {os.getcwd()}")
+
 # Load pipeline
 base_dir = os.path.abspath(os.path.dirname(__file__))
 pipeline_path = os.path.join(base_dir, "models", "optimized_ensemble_pipeline.pkl")
 
+logger.info(f"Base directory: {base_dir}")
 logger.info(f"Attempting to load pipeline from {pipeline_path}")
 
+pipeline = None
 try:
-    pipeline = joblib.load(pipeline_path)
-    logger.info(f"Pipeline loaded successfully from {pipeline_path}")
-except FileNotFoundError:
-    logger.error(f"Pipeline file not found at {pipeline_path}")
-    pipeline = None
+    if os.path.exists(pipeline_path):
+        pipeline = joblib.load(pipeline_path)
+        logger.info(f"Pipeline loaded successfully from {pipeline_path}")
+    else:
+        logger.error(f"Pipeline file not found at {pipeline_path}")
 except Exception as e:
     logger.error(f"Error loading pipeline: {e}")
-    pipeline = None
 
 @app.route('/')
 def home():
@@ -52,7 +56,7 @@ def result():
         # Prepare input for the pipeline
         input_data = np.array([[age, bmi, children, smoker_yes, region_southwest, region_southeast, bmi_smoker]])
 
-        if not pipeline:
+        if pipeline is None:
             raise Exception("Model pipeline is not loaded. Please check the pipeline file.")
 
         # Make prediction
