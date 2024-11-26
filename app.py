@@ -24,6 +24,7 @@ class InputTransformer:
     def fit(self, X, y=None):
         return self
 
+
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import GradientBoostingRegressor
 
@@ -57,11 +58,15 @@ app = Flask(__name__)
 # Dynamically resolve the model path
 try:
     # Attempt to dynamically find the model file
-    pipeline_path = glob.glob("/tmp/*/models/optimized_ensemble_pipeline.pkl")[0]
-    logger.info(f"Model found dynamically at: {pipeline_path}")
-except IndexError:
-    # Fall back to a hardcoded path if needed
-    pipeline_path = "/tmp/8dd0e20672ca4ed/models/optimized_ensemble_pipeline.pkl"
+    dynamic_pipeline_path = glob.glob("/tmp/*/models/optimized_ensemble_pipeline.pkl")
+    if dynamic_pipeline_path:
+        pipeline_path = dynamic_pipeline_path[0]
+        logger.info(f"Model found dynamically at: {pipeline_path}")
+    else:
+        raise FileNotFoundError
+except FileNotFoundError:
+    # Fall back to a hardcoded path if dynamic resolution fails
+    pipeline_path = "/tmp/8dd0e230e40f188/models/optimized_ensemble_pipeline.pkl"
     logger.warning(f"Dynamic resolution failed. Using fallback path: {pipeline_path}")
 
 # Load pipeline
