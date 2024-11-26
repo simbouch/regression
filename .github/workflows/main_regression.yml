@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'regression'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CE386163149D4EB9A94CD0FF6EC1924D }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0A238F0DC5DF4631ABA921924D2550E2 }}
