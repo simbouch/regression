@@ -3,6 +3,7 @@ import joblib
 import numpy as np
 import pandas as pd
 import os
+import glob
 import logging
 import importlib
 
@@ -53,10 +54,15 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app
 app = Flask(__name__)
 
-# Get base directory and set pipeline path
-pipeline_path = "/tmp/8dd0df7c2a14461/models/optimized_ensemble_pipeline.pkl"
-
-logger.info(f"Pipeline path: {pipeline_path}")
+# Dynamically resolve the model path
+try:
+    # Attempt to dynamically find the model file
+    pipeline_path = glob.glob("/tmp/*/models/optimized_ensemble_pipeline.pkl")[0]
+    logger.info(f"Model found dynamically at: {pipeline_path}")
+except IndexError:
+    # Fall back to a hardcoded path if needed
+    pipeline_path = "/tmp/8dd0e20672ca4ed/models/optimized_ensemble_pipeline.pkl"
+    logger.warning(f"Dynamic resolution failed. Using fallback path: {pipeline_path}")
 
 # Load pipeline
 pipeline = None
@@ -77,17 +83,11 @@ except Exception as e:
 
 @app.route('/')
 def home():
-    """
-    Render the home page with the input form.
-    """
     return render_template('index.html')
 
 
 @app.route('/result', methods=['POST'])
 def result():
-    """
-    Handle prediction and display results.
-    """
     try:
         # Get form data
         data = request.form
