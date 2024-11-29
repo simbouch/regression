@@ -58,7 +58,7 @@ app = Flask(__name__)
 # Dynamically resolve the model path
 try:
     # Attempt to dynamically find the model file
-    dynamic_pipeline_path = glob.glob("/tmp/*/models/linear_regression_pipeline.pkl")
+    dynamic_pipeline_path = glob.glob("/tmp/*/models/gradient_boosting_pipeline.pkl")
     if dynamic_pipeline_path:
         pipeline_path = dynamic_pipeline_path[0]
         logger.info(f"Model found dynamically at: {pipeline_path}")
@@ -66,7 +66,7 @@ try:
         raise FileNotFoundError
 except FileNotFoundError:
     # Fall back to a hardcoded path if dynamic resolution fails
-    pipeline_path = "/tmp/8dd0e230e40f188/models/linear_regression_pipeline.pkl"
+    pipeline_path = "/tmp/8dd0e230e40f188/models/gradient_boosting_pipeline.pkl"
     logger.warning(f"Dynamic resolution failed. Using fallback path: {pipeline_path}")
 
 # Load pipeline
